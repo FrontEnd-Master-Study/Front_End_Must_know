@@ -19,8 +19,8 @@
 1. 싱글 스레드인 자바스크립트의 경우 엔진이 메모리 할당을 담당하는 Memory Heap과 코드가 호출되어 스택으로 쌓이는 Call Stack으로 이루어져 있는데 이때 콜 스택에 쌓인 순서대로 코드를 실행하고 제거하게 된다.
 
 2. 이때 비동기 작업의 경우 Web API에게 넘겨주게 된다.
-3. Web API는 비동기 작업을 수행하고 콜백 함수를 이벤트 루프를 통해 task Queue에게 넘겨준다.
-4. 이벤트 루프는 Call Stack이 비어있으면 task Queue를 확인하고 task Queue에 존재하는 콜백 함수를 Call Stack에 밀어넣어준다.
+3. Web API는 비동기 작업을 수행하고 콜백 함수를 이벤트 루프를 통해 Call에게 넘겨준다.
+4. 이벤트 루프는 Call Stack이 비어있으면 Call를 확인하고 Call에 존재하는 콜백 함수를 Call Stack에 밀어넣어준다.
 5. Call Stack에 쌓인 콜백 함수가 실행되고 Call Stack에서 제거된다.
 
 <br>
@@ -170,3 +170,5 @@
 - [T.I.L 이벤트루프란 무엇인가? [21.03.23]](https://velog.io/@wnstjr0317/T.I.L-%EC%9D%B4%EB%B2%A4%ED%8A%B8%EB%A3%A8%ED%94%84%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80)
 
 - [자바스크립트 비동기 처리 과정과 RxJS Scheduler](https://sculove.github.io/post/javascriptflow/)
+
+- [](https://velog.io/@thms200/Event-Loop-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84)
