@@ -1,3 +1,5 @@
+Sangji
+
 # JavaScript
 
 1. JavaScript는 어떤 언어인가요? (싱글 스레드 언어)
