@@ -19,7 +19,13 @@ Sangji
 
 엄밀히 말하자면 자바스크립트의 메인 스레드가 싱글 스레드입니다. 하지만 실제 사용 시 멀티 스레드처럼 사용합니다. 그 이유는 자바스크립트 엔진이 웹브라우저나 Node.js와 같은 멀티 스레드 환경에 임베디드되어 실행되기 때문입니다. 즉 자바스크립트 엔진은 싱글스레드이지만 멀티 스레드로 작업이 가능합니다.
 
-# 2. 자바스크립트는 이벤트루프, Web API, Callback Queue와 함께 멀티스레드처럼 사용합니다.
+# 2. 비동기적 처리를 하는 코드를 사용하면 멀티스레드처럼 사용 가능합니다.
+
+이때 비동기적 처리를 위해 자바스크립트는 이벤트루프, Web API, Callback Queue와 함께 작동하며 이는 멀티스레드처럼 동작합니다.
+
+예를 들어 바로 실행할 수 없는 코드(처리 시간이 걸리는 코드), setTimeout, ajax, event listener와 같은 비동기 함수가 코드 중간에 있습니다. 자바스크립트 엔진은 이 코드들은 바로 콜스택에 넣지 않습니다. 대신 대기실에, 즉 web API의 Time thread와 같은 Sub therad에 재껴놓습니다. 그리고 이 다음 코드를 먼저 실행합니다. 대기실에서 처리가 완료된 코드는 바로 콜스택으로 가지 않고, 콜백큐라는 또 다른 대기실로 넘어갑니다. 처리가 완료된 코드들을 여기 줄을 세워놓고, 콜스택으로 하나씩 올려줍니다. 이때 콜스택으로 올리는 조건이 있는데, 콜스택이 비어있을 경우에만 콜백큐에서 콜스택으로 올릴 수 있습니다.
+
+여기서 콜백큐와 콜스택을 돌며 콜스택이 비어있는 지 확인하고, 콜백큐의 코드를 하나씩 콜스택으로 올리는 작업을 하는 것이 바로 '이벤트 루프'입니다.
 
 ```md
 예)
@@ -27,7 +33,7 @@ Sangji
 
 작업1 콜스택에 추가 ➡️ 작업1 실행 ➡️ 콜스택에서 제거
 
-➡️ 작업2:setTimeout 콜스택에 추가 ➡️ 작업2:setTimeout 실행, Web API의 Time thread에 작업 추가 ➡️ Timer thread (=Sub thread)에서 n초 기다리기 수행
+➡️ 작업2:setTimeout(비동기 함수) 콜스택에 추가 ➡️ 작업2:setTimeout 실행, Web API의 Time thread에 작업 추가 ➡️ Timer thread (=Sub thread)에서 n초 기다리기 수행
 
 ➡️ Main thread에서 작업3 콜스택에 추가 ➡️ 작업3 실행 ➡️ 작업3 콜스택에서 제거
 
@@ -36,23 +42,22 @@ Sangji
 
 # 3. 비동기적 처리를 동기적으로 처리하도록 코딩하는 방법
 
-- 비동기적 **callback** 함수 사용
-- ES6 **Promise**
-- ES8 **async** **await**
-
-자바스크립트 엔진만으로는 비동기적으로 구현할 수 없으므로 자바스크립트 실행 환경(Runtime)은 브라우저에서 제공하는 Web API를 사용하여 비동기를 구현하게 된다. DOM 이벤트, setTimeout과 같은 비동기 함수는 web API를 호출하여 콜백 함수를 콜백 큐에 넣는다. 콜백 함수들이 담긴 큐는 특정 시점에서 콜백을 실행시키는 방식이다.
-
-Promise
-자바스크립트 비동기 처리에 사용되는 객체입니다. 프로미스는 주로 서버에서 받아온 데이터를 화면에 표시할 때 사용합니다.
-
-async, await
-asynce await 는 비동기처리의 최신문법이다. 기존의 promise와 다른 것은 아니고,syntatic sugar일 뿐이다. promise를 사용할 경우에 callback처럼 chaining이 일어나는 것은 마찬가지이다. async await을 사용하면 promise를 '깔끔한 스타일'로 작성할 수 있다.
+?
 
 # 4. 싱글 스레드는 메인 스레드 하나로 작업을 처리하고, 멀티 스레드는 메인 스레드 외 추가적인 스레드를 이용하여 병렬적으로 작업을 처리합니다.
 
+- 스레드란 하나의 프로세스 내에서 다양한 작업을 담당하는 최소 실행 단위를 말합니다.
+- 예) 크롬 브라우저 (= 프로세스 1, 부모 프로세스) 에서 벨로그 작성하기 ( = 스레드 1, ) & 유튜브 음악듣기 ( = 스레드 2 )
+- 한개의 프로세스에 하나의 스레드가 있는 것을 싱글스레드, 한 프로세스에 여러개의 스래드를 생성하여 여러 작업을 동시에 처리하는 것을 멀티 스레드라고 합니다.
+- 이때 멀티스레드는 문맥 교환(Context Switching) 작업을 진행합니다.
+- Context Switching은 하나의 스레드A에서 다음 스레드B로 번갈아 이동하면서 조금씩 각각 스레드에 대한 작업을 완료하는 것을 말합니다.
+- 즉 동시에 수행되는 것 처럼 보이게 합니다.
+
 ---
 
-Kywords (참고)
+(참고)
+
+Kywords
 
 1. 병행성 : 여러 작업이 동시에 일어나는 것
 2. 동시성 : 여러 작업이 마치 동시에 일어나는 것 '처럼'보이는 것
@@ -60,3 +65,26 @@ Kywords (참고)
 4. 호출 스택(콜 스택, Call Stack) : 수행 할 자바스크립트 함수를 순차적으로 이 콜스택에 담아서 처리한다.
 5. 콜백 큐, Callback Queue : 런타임 환경에서 처리해야하는 명령어를 임시로 저장하는 대기큐이다. Task Queue, Event Queue라고 하기도 한다.
 6. Web API : 웹 브라우저에서 제공하는 API로, Browser API라고도 한다. (노드js의 경우 C++ API가 있다.)
+
+비동기 처리 함수
+
+- 비동기적 **callback** 함수 사용
+- ES6 **Promise** 사용
+- ES8 **async** **await** 사용
+
+위에서 말핬듯이 자바스크립트 엔진만으로는 비동기적으로 구현할 수 없습니다. 자바스크립트는 브라우저에서 제공하는 Web API를 사용하여 비동기를 구현하게 됩니다. DOM 이벤트, setTimeout과 같은 비동기 함수는 web API를 호출하여 콜백 함수를 콜백 큐에 넣는다. 콜백 함수들이 담긴 큐는 특정 시점에서 콜백을 실행시키는 방식이다.
+
+Promise
+자바스크립트 비동기 처리에 사용되는 객체입니다. 프로미스는 주로 서버에서 받아온 데이터를 화면에 표시할 때 사용합니다.
+
+async, await
+asynce await 는 비동기처리의 최신문법인데, 기존의 promise와 크게 다른 것은 없습니다. promise를 사용할 경우에 callback지옥처럼 chaining이 일어날 수 있는 문제점을 async await가 보완해줍니다. async await을를 통해 promise를 '깔끔한 스타일'로 작성할 수 있습니다.
+
+---
+
+**References**
+
+- [http://www.tcpschool.com/java/java_thread_concept](http://www.tcpschool.com/java/java_thread_concept)
+
+- [https://velog.io/@gil0127/싱글스레드Single-thread-vs-멀티스레드-Multi-thread-t5gv4udj](https://velog.io/@gil0127/%EC%8B%B1%EA%B8%80%EC%8A%A4%EB%A0%88%EB%93%9CSingle-thread-vs-%EB%A9%80%ED%8B%B0%EC%8A%A4%EB%A0%88%EB%93%9C-Multi-thread-t5gv4udj)
+- https://www.youtube.com/watch?v=v67LloZ1ieI
